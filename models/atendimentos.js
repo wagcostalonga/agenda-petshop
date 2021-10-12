@@ -37,37 +37,65 @@ class Atendimento {
       const atendimentoDatado = { ...atendimento, dataCriacao, data };
       const sql = "INSERT INTO Atendimentos SET ?";
 
-      connection.query(sql, atendimentoDatado, (erro, resultados) => {
+      connection.query(sql, atendimentoDatado, (erro) => {
         if (erro) {
           res.status(400).json(erro);
         } else {
-          res.status(201).json(resultados);
+          res.status(201).json(atendimento);
         }
       });
     }
   }
 
   listarAtendimento(res) {
-    const sql = 'SELECT * FROM Atendimentos'
+    const sql = "SELECT * FROM Atendimentos";
     connection.query(sql, (erro, resultados) => {
-      if(erro) {
-        res.status(400).json(erro)
+      if (erro) {
+        res.status(400).json(erro);
       } else {
-        res.status(200).json(resultados)
+        res.status(200).json(resultados);
       }
-    })
+    });
   }
 
   buscarId(id, res) {
     const sql = `SELECT * FROM Atendimentos WHERE id=${id}`;
     connection.query(sql, (erro, resultados) => {
       const atendimento = resultados[0];
-      if(erro) {
+      if (erro) {
         res.status(400).json(erro);
       } else {
         res.status(200).json(atendimento);
       }
-    })
+    });
+  }
+
+  alterarAtendimento(id, campoAtendimento, res) {
+    if (campoAtendimento.data) {
+      campoAtendimento.data = moment(
+        campoAtendimento.data,
+        "DD/MM/YYYY"
+      ).format("YYYY-MM-DD hh:mm:ss");
+    }
+    const sql = "UPDATE Atendimentos SET ? WHERE id=?";
+    connection.query(sql, [campoAtendimento, id], (erro) => {
+      if (erro) {
+        res.status(400).json(erro);
+      } else {
+        res.status(200).json({id, ...campoAtendimento});
+      }
+    });
+  }
+
+  deletarAtendimento(id, res) {
+    const sql = `DELETE FROM Atendimentos WHERE id=?`;
+    connection.query(sql, id, (erro) => {
+      if (erro) {
+        res.status(400).json(erro);
+      } else {
+        res.status(200).json({ id });
+      }
+    });
   }
 }
 

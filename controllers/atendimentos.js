@@ -14,11 +14,22 @@ module.exports = (app) => {
     const atendimento = req.body;
     Atendimento.adicionarAtendimento(atendimento, res);
   });
+
+  app.patch("/atendimentos/:id", (req, res) => {
+    const id = parseInt(req.params.id);
+    const campoAtendimento = req.body;
+    Atendimento.alterarAtendimento(id, campoAtendimento, res);
+  });
+
+  app.delete('/atendimentos/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    Atendimento.deletarAtendimento(id, res);
+  })
 };
 
 /**
  * Responsabilidade:
  * atendimento.js = controlar as rotas
- * 
- * parseInt(req.params.id) = convertendo a string do ID em número 
+ *
+ * parseInt(req.params.id) = convertendo a string do ID em número
  */
